@@ -40,7 +40,7 @@ def deploy(environment) {
         error "Environment not valid"
     }
 
-    // Stop container if exists
+    // Stop container if running
     bat """
     FOR /F %%i IN ('docker ps -q -f name=${containerName}') DO docker stop %%i
     """
@@ -55,5 +55,6 @@ def deploy(environment) {
     docker run -d -p ${port}:5000 --name ${containerName} hands-on-jenkins/myapp:${BUILD_NUMBER}
     """
 }
+
 
 
