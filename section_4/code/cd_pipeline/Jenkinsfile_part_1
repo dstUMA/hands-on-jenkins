@@ -10,22 +10,24 @@ pipeline {
     stages {
 
         stage("Build") {
-            steps { buildApp() }
-		}
+            steps {
+                buildApp()
+            }
+        }
 
         stage("Deploy - Dev") {
-            steps { deploy('dev') }
-		}
-
-	}
+            steps {
+                deploy('dev')
+            }
+        }
+    }
 }
-
 
 // steps
 def buildApp() {
-	dir ('section_4/code/cd_pipeline' ) {
-		def appImage = docker.build("hands-on-jenkins/myapp:${BUILD_NUMBER}")
-	}
+    dir('section_4/code/cd_pipeline') {
+        docker.build("hands-on-jenkins/myapp:${BUILD_NUMBER}")
+    }
 }
 
 def deploy(environment) {
@@ -40,14 +42,14 @@ def deploy(environment) {
         error "Environment not valid"
     }
 
-    // Stop container if running
+    // Stop container if running (Windows-safe)
     bat """
-    FOR /F %%i IN ('docker ps -q -f "name=${containerName}"') DO docker stop %%i
+    docker stop ${containerName} >NUL 2>&1
     """
 
     // Remove container if exists
     bat """
-    FOR /F %%i IN ('docker ps -aq -f "name=${containerName}"') DO docker rm %%i
+    docker rm ${containerName} >NUL 2>&1
     """
 
     // Run container
@@ -55,7 +57,3 @@ def deploy(environment) {
     docker run -d -p ${port}:5000 --name ${containerName} hands-on-jenkins/myapp:${BUILD_NUMBER}
     """
 }
-
-
-
-
