@@ -42,14 +42,14 @@ def deploy(environment) {
         error "Environment not valid"
     }
 
-    // Stop container if running (Windows-safe)
+    // Stop container if running
     bat """
-    docker stop ${containerName} >NUL 2>&1
+    docker stop ${containerName} >NUL 2>&1 || exit 0
     """
 
     // Remove container if exists
     bat """
-    docker rm ${containerName} >NUL 2>&1
+    docker rm ${containerName} >NUL 2>&1 || exit 0
     """
 
     // Run container
