@@ -42,12 +42,12 @@ def deploy(environment) {
 
     // Stop container if running
     bat """
-    FOR /F %%i IN ('docker ps -q -f name=${containerName}') DO docker stop %%i
+    FOR /F %%i IN ('docker ps -q -f "name=${containerName}"') DO docker stop %%i
     """
 
     // Remove container if exists
     bat """
-    FOR /F %%i IN ('docker ps -aq -f name=${containerName}') DO docker rm %%i
+    FOR /F %%i IN ('docker ps -aq -f "name=${containerName}"') DO docker rm %%i
     """
 
     // Run container
